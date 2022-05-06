@@ -1,4 +1,5 @@
 <template>
+<div style="width:50%">
   <div
     class="w-full md:w-auto absolute md:top-[40px] md:left-[60px] z-[2] flex gap-4 px-6 py-8 md:px-0 md:py-0 bg-transparent"
   >
@@ -22,20 +23,20 @@
         <!-- Search Queries -->
         <div
           v-if="searchQuery && searchResults"
-          class="h-[200px] overflow-scroll bg-white rounded-md"
+          class="bg-white rounded-md"
         >
           <!-- Loading Spinner -->
           <LoadingSpinner v-if="!searchData" />
           <!-- Display Results -->
           <div v-else>
             <div
-              class="px-4 py-2 flex gap-x-2 cursor-pointer hover:bg-slate-600 hover:text-white"
+              class="px-4 py-2 flex gap-x-2 cursor-pointer hover:rounded-md hover:bg-slate-600 hover:text-white"
               v-for="(result, index) in searchData"
               :key="index"
               @click="selectResult(result)"
             >
               <i class="fas fa-map-marker-alt"></i>
-              <p class="text-[12px]">{{ result.place_name_en }}</p>
+              <p class="text-[12px]">{{ result.place_name }}</p>
             </div>
           </div>
         </div>
@@ -44,8 +45,7 @@
           <i @click="removeResult" class="flex justify-end far fa-times-circle"></i>
           <h1 class="text-lg">{{ selectedResult.text }}</h1>
           <p class="text-xs mb-1">
-            {{ selectedResult.properties.address }}, {{ selectedResult.city }},
-            {{ selectedResult.state }}
+            {{ selectedResult.place_name }}
           </p>
           <p class="text-xs">{{ selectedResult.properties.category }}</p>
         </div>
@@ -63,20 +63,29 @@
       ></i>
     </div>
   </div>
+</div>
+
 </template>
 
 <script>
 import { ref } from "vue";
+import { useStore } from 'vuex'
 import axios from "axios";
 import LoadingSpinner from "./LoadingSpinner.vue";
+
+
+
 export default {
   props: ["fetchCoords", "coords", "searchResults"],
+
   components: { LoadingSpinner },
+
   setup(props, { emit }) {
     const searchQuery = ref(null);
     const searchData = ref(null);
     const queryTimeout = ref(null);
     const selectedResult = ref(null);
+    const store = useStore()
 
     const search = () => {
       clearTimeout(queryTimeout.value);
@@ -86,13 +95,7 @@ export default {
       queryTimeout.value = setTimeout(async () => {
         // Only make search, if there is value in query input
         if (searchQuery.value !== "") {
-          const params = new URLSearchParams({
-            fuzzyMatch: true,
-            language: "en",
-            limit: 10,
-            proximity: props.coords ? `${props.coords.lng},${props.coords.lat}` : "0,0",
-          });
-          const data = await axios.get(`api/search/${searchQuery.value}?${params}`);
+          const data = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${searchQuery.value}.json?language=de&access_token=${process.env.VUE_APP_API_KEY}`);
           searchData.value = data.data.features;
         }
       }, 750);
@@ -101,12 +104,15 @@ export default {
     const selectResult = (result) => {
       selectedResult.value = result;
       emit("plotResult", result.geometry);
+      store.commit("addLocation", result);
     };
 
     const removeResult = () => {
       selectedResult.value = null;
       emit("removeResult");
     };
+
+
 
     return {
       searchQuery,

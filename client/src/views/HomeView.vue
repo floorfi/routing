@@ -1,21 +1,31 @@
 <template>
   <div class="h-screen relative">
-    <GeoErrorModal
-      v-if="geoError"
-      :geoErrorMsg="geoErrorMsg"
-      @closeGeoError="closeGeoError"
-    />
-    <MapFeatures
-      :fetchCoords="fetchCoords"
-      :coords="coords"
-      @toggleSearchResults="toggleSearchResults"
-      @getGeolocation="getGeolocation"
-      @plotResult="plotResult"
-      @removeResult="removeResult"
-      :searchResults="searchResults"
-      class="w-full md:w-auto absolute md:top-[40px] md:left-[60px] z-[2]"
-    />
-    <div id="mapid" class="h-full z-[1]"></div>
+  <GeoErrorModal
+    v-if="geoError"
+    :geoErrorMsg="geoErrorMsg"
+    @closeGeoError="closeGeoError"
+  />
+  <MapFeatures
+    :fetchCoords="fetchCoords"
+    :coords="coords"
+    @toggleSearchResults="toggleSearchResults"
+    @getGeolocation="getGeolocation"
+    @plotResult="plotResult"
+    @removeResult="removeResult"
+    :searchResults="searchResults"
+    class="w-full md:w-auto absolute md:top-[40px] md:left-[60px] z-[2]"
+  />
+  <MapFeaturesBottom
+    :fetchCoords="fetchCoords"
+    :coords="coords"
+    @toggleSearchResults="toggleSearchResults"
+    @getGeolocation="getGeolocation"
+    @plotResult="plotResult"
+    @removeResult="removeResult"
+    :searchResults="searchResults"
+    class="w-full md:w-auto absolute md:top-[40px] md:left-[60px] z-[2]"
+  />
+  <div id="mapid" class="h-full z-[1]"></div>
   </div>
 </template>
 
@@ -24,39 +34,58 @@ import leaflet from "leaflet";
 import { onMounted, ref } from "vue";
 import GeoErrorModal from "../components/GeoErrorModal.vue";
 import MapFeatures from "../components/MapFeatures.vue";
+import MapFeaturesBottom from "../components/MapFeaturesBottom.vue";
+
+import mapboxgl from "mapbox-gl";
+
 export default {
   name: "HomeView",
-  components: { GeoErrorModal, MapFeatures },
+  components: { GeoErrorModal, MapFeatures, MapFeaturesBottom },
   setup() {
     let map;
     onMounted(() => {
       // init map
-      map = leaflet
-        .map("mapid", {
-          zoomControl: false,
-        })
-        .setView([28.538336, -81.379234], 10);
+      // map = leaflet
+      //   .map("mapid", {
+      //     zoomControl: false,
+      //   })
+      //   .setView([28.538336, -81.379234], 10);
 
-      // add tile layers
-      leaflet
-        .tileLayer(
-          `https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${process.env.VUE_APP_API_KEY}`,
-          {
-            maxZoom: 18,
-            id: "mapbox/streets-v11",
-            tileSize: 512,
-            zoomOffset: -1,
-            accessToken: process.env.VUE_APP_API_KEY,
-          }
-        )
-        .addTo(map);
+      // // add tile layers
+      // leaflet
+      //   .tileLayer(
+      //     `https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${process.env.VUE_APP_API_KEY}`,
+      //     {
+      //       maxZoom: 18,
+      //       id: "mapbox/streets-v11",
+      //       tileSize: 512,
+      //       zoomOffset: -1,
+      //       accessToken: process.env.VUE_APP_API_KEY,
+      //     }
+      //   )
+      //   .addTo(map);
 
-      map.on("moveend", () => {
-        closeSearchResults();
-      });
+      // map.on("moveend", () => {
+      //   closeSearchResults();
+      // });
 
       // get users location
       getGeolocation();
+
+
+
+      // Mapbox GL
+      mapboxgl.accessToken = "pk.eyJ1IjoiZmxvb3JmaSIsImEiOiJjbDJuYXBqZW4wdmJ4M2lua2F3OTF4NjFjIn0.alPFZ8niF6n98Iky2lEEJg";
+      const bounds = [
+        [-123.069003, 45.395273],
+        [-122.303707, 45.612333]
+      ];
+      const mapbox = new mapboxgl.Map({
+        container: "mapid",
+        style: "mapbox://styles/floorfi/cl2ncj0b5005114n5kpqbddb1"
+      });
+      mapbox.setMaxBounds(bounds);
+
     });
 
     const coords = ref(null);
