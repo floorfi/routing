@@ -1,56 +1,10 @@
 <template>
-<div style="width:50%">
+<div>
   <div
     class="w-full md:w-auto absolute md:top-[40px] md:left-[60px] z-[2] flex gap-4 px-6 py-8 md:px-0 md:py-0 bg-transparent"
   >
     <!-- Search -->
-    <div class="relative flex-1 md:min-w-[350px]">
-      <!-- Search Input -->
-      <input
-        class="pl-9 pr-4 py-3 text-[14px] focus:outline-none w-full shadow-md rounded-md"
-        type="text"
-        placeholder="Start your search..."
-        v-model="searchQuery"
-        @input="search"
-        @focus="$emit('toggleSearchResults')"
-      />
-      <!-- Search Icon -->
-      <div class="absolute top-0 left-[8px] h-full flex items-center">
-        <i class="fas fa-search"></i>
-      </div>
-      <!-- Search Results -->
-      <div class="absolute mt-[8px] w-full">
-        <!-- Search Queries -->
-        <div
-          v-if="searchQuery && searchResults"
-          class="bg-white rounded-md"
-        >
-          <!-- Loading Spinner -->
-          <LoadingSpinner v-if="!searchData" />
-          <!-- Display Results -->
-          <div v-else>
-            <div
-              class="px-4 py-2 flex gap-x-2 cursor-pointer hover:rounded-md hover:bg-slate-600 hover:text-white"
-              v-for="(result, index) in searchData"
-              :key="index"
-              @click="selectResult(result)"
-            >
-              <i class="fas fa-map-marker-alt"></i>
-              <p class="text-[12px]">{{ result.place_name }}</p>
-            </div>
-          </div>
-        </div>
-        <!-- Selected Search Result -->
-        <div v-if="selectedResult" class="mt-[8px] px-4 py-3 bg-white rounded-md">
-          <i @click="removeResult" class="flex justify-end far fa-times-circle"></i>
-          <h1 class="text-lg">{{ selectedResult.text }}</h1>
-          <p class="text-xs mb-1">
-            {{ selectedResult.place_name }}
-          </p>
-          <p class="text-xs">{{ selectedResult.properties.category }}</p>
-        </div>
-      </div>
-    </div>
+    <location-search />
     <!-- Geolocation -->
     <div
       class="px-4 bg-white flex items-center shadow-md rounded-md min-h-[45px]"
@@ -71,14 +25,14 @@
 import { ref } from "vue";
 import { useStore } from 'vuex'
 import axios from "axios";
-import LoadingSpinner from "./LoadingSpinner.vue";
+import LocationSearch from "./LocationSearch.vue";
 
 
 
 export default {
-  props: ["fetchCoords", "coords", "searchResults"],
+  props: ["fetchCoords", "coords"],
 
-  components: { LoadingSpinner },
+  components: { LocationSearch },
 
   setup(props, { emit }) {
     const searchQuery = ref(null);

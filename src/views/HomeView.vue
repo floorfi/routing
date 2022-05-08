@@ -1,5 +1,5 @@
 <template>
-  <div class="h-screen relative">
+
   <GeoErrorModal
     v-if="geoError"
     :geoErrorMsg="geoErrorMsg"
@@ -15,32 +15,23 @@
     :searchResults="searchResults"
     class="w-full md:w-auto absolute md:top-[40px] md:left-[60px] z-[2]"
   />
-  <MapFeaturesBottom
-    :fetchCoords="fetchCoords"
-    :coords="coords"
-    @toggleSearchResults="toggleSearchResults"
-    @getGeolocation="getGeolocation"
-    @plotResult="plotResult"
-    @removeResult="removeResult"
-    :searchResults="searchResults"
-    class="w-full md:w-auto absolute md:top-[40px] md:left-[60px] z-[2]"
-  />
+
   <div id="mapid" class="h-full z-[1]"></div>
-  </div>
+
 </template>
 
 <script>
-import leaflet from "leaflet";
 import { onMounted, ref, inject } from "vue";
 import GeoErrorModal from "../components/GeoErrorModal.vue";
 import MapFeatures from "../components/MapFeatures.vue";
-import MapFeaturesBottom from "../components/MapFeaturesBottom.vue";
 
 import mapboxgl from "mapbox-gl";
+import 'mapbox-gl/dist/mapbox-gl.css';
+
 
 export default {
   name: "HomeView",
-  components: { GeoErrorModal, MapFeatures, MapFeaturesBottom },
+  components: { GeoErrorModal, MapFeatures },
   setup() {
     const axios = inject('axios')  // inject axios
     onMounted(() => {
@@ -54,44 +45,8 @@ export default {
         style: "mapbox://styles/floorfi/cl2ncj0b5005114n5kpqbddb1"
       });
 
-      //
-      // map.on('load', () => {
-      //   // make an initial directions request that
-      //   // starts and ends at the same location
-      //   getRoute(start);
-      //
-      //   // Add destination to the map
-      //   addLayer(map, start);
-      //
-      //   // allow the user to click the map to change the destination
-      //   map.on('click', (event) => {
-      //     const coords = Object.keys(event.lngLat).map(
-      //         (key) => event.lngLat[key]
-      //     );
-      //     const end = {
-      //       'type': 'FeatureCollection',
-      //       'features': [
-      //         {
-      //           'type': 'Feature',
-      //           'properties': {},
-      //           'geometry': {
-      //             'type': 'Point',
-      //             'coordinates': coords
-      //           }
-      //         }
-      //       ]
-      //     };
-      //     if (map.getLayer('end')) {
-      //       map.getSource('end').setData(end);
-      //     } else {
-      //       addLayer(map, coords);
-      //     }
-      //     getRoute(coords);
-      //   });
-      // });
       map.on('load', () => {
-        new mapboxgl.Marker().setLngLat([30.5, 50.5])
-            .addTo(map);
+        getGeolocation();
       })
     });
 
@@ -149,10 +104,9 @@ export default {
     }
 
     // eslint-disable-next-line no-unused-vars
-    const addLayer = (map, coords, type) => {
-      console.log(map);
-      map.addLayer({
-        'id': 'end',
+    const addLayer = (id, coords, type) => {
+      return map.addLayer({
+        'id': id,
         'type': 'circle',
         'source': {
           'type': 'geojson',
@@ -181,11 +135,11 @@ export default {
 
     // Mapbox Marker hinzufügen
     const addMarker = (coords) => {
-      console.log(new mapboxgl.Marker({
+      return new mapboxgl.Marker({
         color: "#FFFFFF",
         draggable: true
       }).setLngLat(coords)
-          .addTo(map));
+          .addTo(map);
     }
 
     // Standort des Users holen und Pin auf Karte setzen
@@ -242,18 +196,14 @@ export default {
 
     const resultMarker = ref(null);
     const plotResult = (coords) => {
+      console.log(coords);
       // If there is already a marker, remove it. Only allow 1
       if (resultMarker.value) {
         map.removeLayer(resultMarker.value);
       }
-      const customMarker = leaflet.icon({
-        iconUrl: require("../assets/map-marker-blue.svg"),
-        iconSize: [35, 35], // size of the icon
-      });
-      resultMarker.value = leaflet
-        .marker([coords.coordinates[1], coords.coordinates[0]], { icon: customMarker })
-        .addTo(map);
-      map.setView([coords.coordinates[1], coords.coordinates[0]], 13);
+
+      resultMarker.value = addMarker(coords.coordinates);
+      // map.setView([coords.coordinates[1], coords.coordinates[0]], 13);
     };
 
     const removeResult = () => {
@@ -289,3 +239,16 @@ export default {
   },
 };
 </script>
+
+<style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      #mapid {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+</style>
