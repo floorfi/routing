@@ -36,15 +36,6 @@
           </div>
         </div>
       </div>
-      <!-- Selected Search Result -->
-      <div v-if="selectedResult" class="mt-[8px] px-4 py-3 bg-white rounded-md">
-        <i @click="removeResult" class="flex justify-end far fa-times-circle"></i>
-        <h1 class="text-lg">{{ selectedResult.text }}</h1>
-        <p class="text-xs mb-1">
-          {{ selectedResult.place_name }}
-        </p>
-        <p class="text-xs">{{ selectedResult.properties.category }}</p>
-      </div>
     </div>
   </div>
 </template>
@@ -96,15 +87,9 @@ export default {
       store.commit("addLocation", result);
     };
 
-    const removeResult = () => {
-      selectedResult.value = null;
-      emit("removeResult");
+    const closeSearchResults = () => {
+      searchResults.value = null;
     };
-
-
-    // const closeSearchResults = () => {
-    //   searchResults.value = null;
-    // };
 
 
     return {
@@ -114,7 +99,7 @@ export default {
       searchData,
       selectResult,
       selectedResult,
-      removeResult,
+      closeSearchResults,
       toggleSearchResults,
     };
   },

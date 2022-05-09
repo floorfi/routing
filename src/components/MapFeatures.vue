@@ -16,6 +16,8 @@
         :class="{ 'text-white': coords, 'animate-pulse': fetchCoords }"
       ></i>
     </div>
+    <!-- Stops -->
+    <stop-list />
   </div>
 </div>
 
@@ -26,13 +28,14 @@ import { ref } from "vue";
 import { useStore } from 'vuex'
 import axios from "axios";
 import LocationSearch from "./LocationSearch.vue";
+import StopList from "./StopList.vue";
 
 
 
 export default {
   props: ["fetchCoords", "coords"],
 
-  components: { LocationSearch },
+  components: { LocationSearch, StopList },
 
   setup(props, { emit }) {
     const searchQuery = ref(null);
