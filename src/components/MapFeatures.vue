@@ -5,11 +5,7 @@
     <!-- Search -->
     <location-search />
     <!-- Geolocation -->
-    <geo-location
-        @getGeolocation="$emit('getGeolocation')"
-        :fetchCoords="fetchCoords"
-        :coords="coords"
-    />
+    <geo-location />
 
   </div>
 </template>
@@ -19,8 +15,6 @@ import LocationSearch from "./LocationSearch.vue";
 import GeoLocation from "./GeoLocation.vue";
 
 export default {
-  props: ["fetchCoords", "coords"],
-
   components: { LocationSearch, GeoLocation },
 };
 </script>

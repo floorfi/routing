@@ -1,7 +1,7 @@
 <template>
   <div
     class="px-4 bg-white flex items-center shadow-md rounded-md min-h-[45px]"
-    @click="$emit('getGeolocation')"
+    @click="getGeolocation"
     :class="{ 'bg-slate-600': coords }"
   >
     <i
@@ -12,12 +12,17 @@
 </template>
 
 <script>
+import { inject } from 'vue'
+
 export default {
-  props: ["fetchCoords", "coords"],
-
   setup() {
+    const { getGeolocation, fetchCoords, coords } = inject('map')
 
-    return {};
+    return {
+      getGeolocation,
+      fetchCoords,
+      coords
+    };
   },
 };
 </script>

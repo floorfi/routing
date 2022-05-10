@@ -6,8 +6,6 @@
     @closeGeoError="closeGeoError"
   />
   <MapFeatures
-    :fetchCoords="fetchCoords"
-    :coords="coords"
     @toggleSearchResults="toggleSearchResults"
     @getGeolocation="getGeolocation"
     @plotResult="plotResult"
@@ -23,7 +21,7 @@
 </template>
 
 <script>
-import { onMounted, ref, inject } from "vue";
+import { onMounted, ref, provide, inject } from "vue";
 import GeoErrorModal from "../components/GeoErrorModal.vue";
 import MapFeatures from "../components/MapFeatures.vue";
 import StopList from "./../components/StopList.vue";
@@ -225,6 +223,12 @@ export default {
     const closeSearchResults = () => {
       searchResults.value = null;
     };
+
+    provide('map', {
+      getGeolocation,
+      fetchCoords,
+      coords
+    })
 
     return {
       geoError,
