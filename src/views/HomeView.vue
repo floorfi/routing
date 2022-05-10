@@ -16,6 +16,8 @@
     class="w-full md:w-auto absolute md:top-[40px] md:left-[60px] z-[2]"
   />
 
+  <stop-list/>
+
   <div id="mapid" class="h-full z-[1]"></div>
 
 </template>
@@ -24,6 +26,7 @@
 import { onMounted, ref, inject } from "vue";
 import GeoErrorModal from "../components/GeoErrorModal.vue";
 import MapFeatures from "../components/MapFeatures.vue";
+import StopList from "./../components/StopList.vue";
 
 import mapboxgl from "mapbox-gl";
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -31,7 +34,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 
 export default {
   name: "HomeView",
-  components: { GeoErrorModal, MapFeatures },
+  components: { GeoErrorModal, MapFeatures, StopList },
   setup() {
     const axios = inject('axios')  // inject axios
     onMounted(() => {

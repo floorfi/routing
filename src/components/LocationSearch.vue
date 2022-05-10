@@ -82,6 +82,7 @@ export default {
     };
 
     const selectResult = (result) => {
+      console.log(result);
       selectedResult.value = result;
       emit("plotResult", result.geometry);
       store.commit("addLocation", result);
