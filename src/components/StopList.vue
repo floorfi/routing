@@ -23,11 +23,10 @@ export default {
 
   setup(props, { emit }) {
     const store = useStore();
-    const removeResult = () => {
 
+    const removeResult = () => {
       emit("removeResult");
     };
-
 
     const stops = reactive(store.state.locations)
 

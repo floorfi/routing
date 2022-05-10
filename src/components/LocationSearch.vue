@@ -57,7 +57,6 @@ export default {
     const searchQuery = ref(null);
     const searchData = ref(null);
     const queryTimeout = ref(null);
-    const selectedResult = ref(null);
     const store = useStore()
     const searchResults = ref(null);
 
@@ -82,8 +81,6 @@ export default {
     };
 
     const selectResult = (result) => {
-      console.log(result);
-      selectedResult.value = result;
       emit("plotResult", result.geometry);
       store.commit("addLocation", result);
     };
@@ -99,7 +96,6 @@ export default {
       searchResults,
       searchData,
       selectResult,
-      selectedResult,
       closeSearchResults,
       toggleSearchResults,
     };
