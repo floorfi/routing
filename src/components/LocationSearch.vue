@@ -18,7 +18,7 @@
     <div class="absolute mt-[8px] w-full">
       <!-- Search Queries -->
       <div
-        v-if="searchQuery && searchResults"
+        v-if="searchQuery && showSearchResults"
         class="bg-white rounded-md"
       >
         <!-- Loading Spinner -->
@@ -40,13 +40,13 @@
   </div>
 </template>
 
-<script>
-import { ref } from "vue";
-import { useStore } from 'vuex'
+<script lang="ts">
+import { ref, inject } from "vue";
+import {Store, useStore} from 'vuex'
 import axios from "axios";
+import MapBoxDataService from "../api/mapbox"
 import LoadingSpinner from "./LoadingSpinner.vue";
-
-
+import {Ref} from "vue";
 
 export default {
   props: ["fetchCoords", "coords"],
@@ -54,46 +54,57 @@ export default {
   components: { LoadingSpinner },
 
   setup(props, { emit }) {
-    const searchQuery = ref(null);
-    const searchData = ref(null);
-    const queryTimeout = ref(null);
-    const store = useStore()
-    const searchResults = ref(null);
+    const { getRoute } = inject('map');
+
+    const searchQuery: Ref<string|null> = ref(null);
+    const searchData: Ref<string|null> = ref(null);
+    const queryTimeout: Ref<number|undefined> = ref();
+    const store: Store<any> = useStore()
+    const showSearchResults: Ref<boolean> = ref(false);
 
     const toggleSearchResults = () => {
-      console.log('toggle')
-      searchResults.value = !searchResults.value;
+      showSearchResults.value = !showSearchResults.value;
     };
 
-    const search = () => {
-      clearTimeout(queryTimeout.value);
+    const search = (): void => {
+      if(queryTimeout.value) {
+        clearTimeout(queryTimeout.value);
+      }
 
       // reset data on a new search
       searchData.value = null;
       queryTimeout.value = setTimeout(async () => {
         // Only make search, if there is value in query input
-        if (searchQuery.value !== "") {
-          const data = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${searchQuery.value}.json?language=de&access_token=${process.env.VUE_APP_API_KEY}`);
-          searchData.value = data.data.features;
-          console.log(searchData);
+        if (searchQuery.value) {
+          MapBoxDataService.getSearchResults(searchQuery.value)
+              .then(result => {
+                searchData.value = result.data.features;
+              })
         }
       }, 750);
     };
 
-    const selectResult = (result) => {
-      emit("plotResult", result.geometry);
+    const selectResult = (result): void => {
       store.commit("addLocation", result);
+
+      if(store.state.locations.length > 1) {
+        var coords = [];
+        store.state.locations.forEach(location => {
+          coords.push(location.geometry.coordinates)
+        });
+        getRoute(coords)
+      }
     };
 
     const closeSearchResults = () => {
-      searchResults.value = null;
+      showSearchResults.value = false;
     };
 
 
     return {
       searchQuery,
       search,
-      searchResults,
+      showSearchResults,
       searchData,
       selectResult,
       closeSearchResults,

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="h-screen absolute w-full z-10 flex justify-center items-start pt-[125px] bg-black/50"
+    class="absolute w-full flex mt-[60px]"
   >
     <div class="flex flex-col bg-white w-[80%] sm:w-[450px] px-6 py-4 rounded-md">
       <h1 class="text-lg mb-1">Error: {{ this.geoErrorMsg }}</h1>

@@ -14,4 +14,5 @@ app.use(store);
 app.use(router);
 app.use(VueAxios, axios);
 app.provide('axios', app.config.globalProperties.axios)
+app.config.globalProperties.$map = null
 app.mount('#app');
