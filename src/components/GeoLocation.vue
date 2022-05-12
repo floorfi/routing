@@ -24,7 +24,8 @@ import GeoErrorModal from "../components/GeoErrorModal.vue";
 export default {
   components: { GeoErrorModal },
   setup() {
-    const { addMarker, centerMap } = inject('map');
+    const addMarker = inject('addMarker');
+    const centerMap = inject('centerMap');
 
     const coords = ref(null);
     const fetchCoords = ref(null);

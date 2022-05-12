@@ -53,8 +53,8 @@ export default {
 
   components: { LoadingSpinner },
 
-  setup(props, { emit }) {
-    const { getRoute } = inject('map');
+  setup(props: any, {emit}: any) {
+    const getRoute = inject('getRoute') as Function;
 
     const searchQuery: Ref<string|null> = ref(null);
     const searchData: Ref<string|null> = ref(null);
@@ -84,12 +84,12 @@ export default {
       }, 750);
     };
 
-    const selectResult = (result): void => {
+    const selectResult = (result: any): void => {
       store.commit("addLocation", result);
 
       if(store.state.locations.length > 1) {
-        var coords = [];
-        store.state.locations.forEach(location => {
+        let coords: any = [];
+        store.state.locations.forEach((location: any) => {
           coords.push(location.geometry.coordinates)
         });
         getRoute(coords)

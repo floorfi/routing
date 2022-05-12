@@ -1,23 +1,27 @@
 import { createStore } from 'vuex'
+import {Step} from "@/models/step.model";
+import {Location} from "@/models/location.model";
+import {Route} from "@/models/route.model";
 
 // Create a new store instance.
 const store = createStore({
   state: {
-    locations: [] as any[],
-    routeTo: [] as object[]
+    step: [] as Step[],
+    location: [] as Location[],
+    routeTo: [] as Route[]
   },
   mutations: {
-    addLocation (state, location) {
-      state.locations.push(location)
-      console.log(state.locations)
+    addLocation (state, location: Location) {
+      state.location.push(location)
+      console.log(state.location)
 
     },
 
     removeLocation (state, id) {
-      state.locations = state.locations.filter(location => {
+      state.location = state.location.filter(location => {
         return location.id !== id
       })
-      console.log(state.locations)
+      console.log(state.location)
 
     },
 
