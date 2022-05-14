@@ -1,4 +1,5 @@
 import axios, {AxiosInstance} from "axios";
+import {Coords} from "@/models/coords.model";
 
 const apiClient: AxiosInstance = axios.create({
   headers: {
@@ -11,13 +12,14 @@ class MapBoxDataService {
     return apiClient.get('https://api.mapbox.com/geocoding/v5/mapbox.places/' + query + '.json?language=de&access_token=' + process.env.VUE_APP_API_KEY);
   }
 
-  getRoute(coords: [number[]]): Promise<any> {
+  getRoute(coords: Coords[]): Promise<any> {
+    console.log(coords)
     if(coords.length <= 1) {
       return Promise.resolve();
     }
     let coordString = '';
     coords.forEach(coordinateSet => {
-      coordString += coordinateSet[0] + ',' + coordinateSet[1] + ';'
+      coordString += coordinateSet.latitude + ',' + coordinateSet.longitude + ';'
     });
     coordString = coordString.slice(0,-1);
 

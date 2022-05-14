@@ -47,14 +47,21 @@ import axios from "axios";
 import MapBoxDataService from "../api/mapbox"
 import LoadingSpinner from "./LoadingSpinner.vue";
 import {Ref} from "vue";
+import {Location} from "@/models/location.model";
+import {Route} from "@/models/route.model";
+import {Step} from "@/models/step.model";
 
 export default {
   props: ["fetchCoords", "coords"],
 
   components: { LoadingSpinner },
 
-  setup(props: any, {emit}: any) {
+  setup() {
     const getRoute = inject('getRoute') as Function;
+    const addMarker = inject('addMarker') as Function;
+    const centerMap = inject('centerMap') as Function;
+    const zoomIn = inject('zoomIn') as Function;
+    const convertNumbersToCoords = inject('convertNumbersToCoords') as Function;
 
     const searchQuery: Ref<string|null> = ref(null);
     const searchData: Ref<string|null> = ref(null);
@@ -71,10 +78,8 @@ export default {
         clearTimeout(queryTimeout.value);
       }
 
-      // reset data on a new search
       searchData.value = null;
       queryTimeout.value = setTimeout(async () => {
-        // Only make search, if there is value in query input
         if (searchQuery.value) {
           MapBoxDataService.getSearchResults(searchQuery.value)
               .then(result => {
@@ -85,15 +90,51 @@ export default {
     };
 
     const selectResult = (result: any): void => {
-      store.commit("addLocation", result);
-
-      if(store.state.locations.length > 1) {
-        let coords: any = [];
-        store.state.locations.forEach((location: any) => {
-          coords.push(location.geometry.coordinates)
-        });
-        getRoute(coords)
+      // Ggf. vorhandene vorherige Location holen
+      let previousLocation: Location|undefined;
+      if(store.state.location.length > 0) {
+        previousLocation = store.state.location[store.state.location.length - 1];
       }
+
+      // Neue Location ablegen + Marker setzen
+      let coords = convertNumbersToCoords(result.geometry.coordinates)
+      let marker = addMarker(coords, true)
+      let location: Location = {
+        id: result.id,
+        label: result.place_name_de,
+        coords: coords,
+        marker: marker
+      }
+      store.commit("addLocation", location);
+
+      if(previousLocation) {
+        getRoute(previousLocation, location).then((route: Route) => {
+          console.log(route)
+          store.commit("addRoute", route);
+
+          let step: Step = {
+            id: location.id,
+            orderID: 1,
+            location: location,
+            routeTo: route
+          }
+          store.commit("addStep", step);
+          console.log('fertig hinzugefügt')
+
+        })
+      } else {
+        let step: Step = {
+          id: location.id,
+          orderID: 1,
+          location: location
+        }
+        store.commit("addStep", step);
+        console.log('fertig hinzugefügt')
+
+      }
+
+
+
     };
 
     const closeSearchResults = () => {

@@ -2,6 +2,7 @@ import { createStore } from 'vuex'
 import {Step} from "@/models/step.model";
 import {Location} from "@/models/location.model";
 import {Route} from "@/models/route.model";
+import {inject} from "vue";
 
 // Create a new store instance.
 const store = createStore({
@@ -10,33 +11,39 @@ const store = createStore({
     location: [] as Location[],
     routeTo: [] as Route[]
   },
-  mutations: {
-    addLocation (state, location: Location) {
-      state.location.push(location)
-      console.log(state.location)
+  actions: {
 
+  },
+  mutations: {
+    addStep (state, step: Step) {
+      state.step.push(step)
     },
 
-    removeLocation (state, id) {
+    addLocation (state, location: Location) {
+      state.location.push(location)
+    },
+
+    addRoute (state, route: Route) {
+      state.routeTo.push(route);
+    },
+
+    removeStep (state, id: string) {
+      state.step = state.step.filter(step => {
+        return step.id !== id
+      })
+    },
+
+    removeLocation (state, id: string) {
       state.location = state.location.filter(location => {
         return location.id !== id
       })
-      console.log(state.location)
-
     },
 
-    // addRouteTo (state, route) {
-    //   state.routeTo.push(route)
-    //   console.log(state.routeTo)
-
-    // },
-
-    // removeRouteTo (state, id) {
-    //   state.routeTo = state.routeTo.filter(route => {
-    //     return route.id !== id
-    //   })
-    //   console.log(state.routeTo)
-    // }
+    removeRoute (state, id: string) {
+      state.routeTo = state.routeTo.filter(route => {
+        return route.id !== id
+      })
+    },
   }
 })
 
