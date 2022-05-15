@@ -6,15 +6,13 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 
 import router from "./router";
-import store from './store'
-// import mapPlugin from "@/map.plugin";
+// import store from './store'
 
 const app = createApp(App)
 
-app.use(store);
+// app.use(store);
 app.use(router);
 app.use(VueAxios, axios);
-// app.use(mapPlugin)
 app.provide('axios', app.config.globalProperties.axios)
 app.config.globalProperties.$map = null
 app.mount('#app');

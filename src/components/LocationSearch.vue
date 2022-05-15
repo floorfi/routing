@@ -52,21 +52,17 @@ import {Route} from "@/models/route.model";
 import {Step} from "@/models/step.model";
 
 export default {
-  props: ["fetchCoords", "coords"],
-
   components: { LoadingSpinner },
 
   setup() {
-    const getRoute = inject('getRoute') as Function;
-    const addMarker = inject('addMarker') as Function;
-    const centerMap = inject('centerMap') as Function;
-    const zoomIn = inject('zoomIn') as Function;
-    const convertNumbersToCoords = inject('convertNumbersToCoords') as Function;
+    const stepService = inject('stepService') as any
+    const locationService = inject('locationService') as any
+    const mapService = inject('mapService') as any
+    const routeService = inject('routeService') as any
 
     const searchQuery: Ref<string|null> = ref(null);
     const searchData: Ref<string|null> = ref(null);
     const queryTimeout: Ref<number|undefined> = ref();
-    const store: Store<any> = useStore()
     const showSearchResults: Ref<boolean> = ref(false);
 
     const toggleSearchResults = () => {
@@ -92,43 +88,45 @@ export default {
     const selectResult = (result: any): void => {
       // Ggf. vorhandene vorherige Location holen
       let previousLocation: Location|undefined;
-      if(store.state.location.length > 0) {
-        previousLocation = store.state.location[store.state.location.length - 1];
+      if(locationService.state.locations.length > 0) {
+        previousLocation = locationService.state.locations[locationService.state.locations.length - 1];
       }
 
       // Neue Location ablegen + Marker setzen
-      let coords = convertNumbersToCoords(result.geometry.coordinates)
-      let marker = addMarker(coords, true)
+      let coords = mapService.convertNumbersToCoords(result.geometry.coordinates)
+      let marker = mapService.addMarker(coords, true)
       let location: Location = {
         id: result.id,
         label: result.place_name_de,
         coords: coords,
         marker: marker
       }
-      store.commit("addLocation", location);
+      locationService.addLocation(location);
 
       if(previousLocation) {
-        getRoute(previousLocation, location).then((route: Route) => {
+        routeService.getRoute(previousLocation, location).then((route: Route) => {
           console.log(route)
-          store.commit("addRoute", route);
+          routeService.addRoute(route);
 
           let step: Step = {
             id: location.id,
+            label: location.label,
             orderID: 1,
             location: location,
             routeTo: route
           }
-          store.commit("addStep", step);
+          stepService.addStep(step);
           console.log('fertig hinzugefügt')
 
         })
       } else {
         let step: Step = {
           id: location.id,
+          label: location.label,
           orderID: 1,
           location: location
         }
-        store.commit("addStep", step);
+        stepService.addStep(step);
         console.log('fertig hinzugefügt')
 
       }

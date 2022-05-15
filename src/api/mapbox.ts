@@ -19,7 +19,7 @@ class MapBoxDataService {
     }
     let coordString = '';
     coords.forEach(coordinateSet => {
-      coordString += coordinateSet.latitude + ',' + coordinateSet.longitude + ';'
+      coordString += coordinateSet.lon + ',' + coordinateSet.lat + ';'
     });
     coordString = coordString.slice(0,-1);
 

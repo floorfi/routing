@@ -16,21 +16,23 @@
   </div>
 </template>
 
-<script>
-import { inject, ref } from 'vue'
+<script lang="ts">
+import {inject, Ref, ref} from 'vue'
 import GeoErrorModal from "../components/GeoErrorModal.vue";
+import {Coords} from "@/models/coords.model";
+import {Marker} from "mapbox-gl";
 
 
 export default {
   components: { GeoErrorModal },
-  setup() {
-    const addMarker = inject('addMarker');
-    const centerMap = inject('centerMap');
 
-    const coords = ref(null);
-    const fetchCoords = ref(null);
-    const geoMarker = ref(null);
-    const geoError = ref(null);
+  setup() {
+    const mapService = inject('mapService') as any
+
+    const coords: Ref<Coords|null> = ref(null);
+    const fetchCoords = ref(false);
+    const geoMarker: Ref<Marker|null> = ref(null);
+    const geoError = ref(false);
     const geoErrorMsg = ref(null);
 
     // Standort des Users holen und Pin auf Karte setzen
@@ -39,9 +41,8 @@ export default {
       if (!coords.value) {
         // check to see if we have coods in session sotrage
         if (sessionStorage.getItem("coords")) {
-          coords.value = JSON.parse(sessionStorage.getItem("coords"));
-          geoMarker.value = addMarker(coords.value);
-          centerMap(coords.value);
+          coords.value = JSON.parse(sessionStorage.getItem("coords")!);
+          geoMarker.value = mapService.addMarker(coords.value, true);
           return;
         }
 
@@ -54,31 +55,32 @@ export default {
       // otherwise, remove location
       coords.value = null;
       sessionStorage.removeItem("coords");
-      geoMarker.value.remove();
+      if(geoMarker.value){
+        geoMarker.value.remove();
+      }
     };
 
-    const setCoords = (pos) => {
+    const setCoords = (pos: any) => {
       // stop fetching
-      fetchCoords.value = null;
+      fetchCoords.value = false;
 
       // set coords in session storage
-      const setSessionCoords = {
+      const setSessionCoords: Coords = {
         lat: pos.coords.latitude,
-        lng: pos.coords.longitude,
+        lon: pos.coords.longitude,
       };
       sessionStorage.setItem("coords", JSON.stringify(setSessionCoords));
 
       // set ref coords value
       coords.value = setSessionCoords;
 
-      geoMarker.value = addMarker(coords.value);
-      centerMap(coords.value);
+      geoMarker.value = mapService.addMarker(coords.value, true);
 
     };
 
-    const getLocError = (error) => {
+    const getLocError = (error: any) => {
       // stop fetching coords
-      fetchCoords.value = null;
+      fetchCoords.value = false;
       geoError.value = true;
       geoErrorMsg.value = error.message;
     };
@@ -86,7 +88,7 @@ export default {
     
     const closeGeoError = () => {
       geoErrorMsg.value = null;
-      geoError.value = null;
+      geoError.value = false;
     };
 
     return {
