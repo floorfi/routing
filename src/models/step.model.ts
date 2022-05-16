@@ -5,6 +5,4 @@ export interface Step {
     id: string;
     label: string;
     orderID: number;
-    location: Location;
-    routeTo?: Route;
 }

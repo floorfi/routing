@@ -97,7 +97,7 @@ export default {
       let marker = mapService.addMarker(coords, true)
       let location: Location = {
         id: result.id,
-        label: result.place_name_de,
+        label: result.text_de,
         coords: coords,
         marker: marker
       }
@@ -111,9 +111,7 @@ export default {
           let step: Step = {
             id: location.id,
             label: location.label,
-            orderID: 1,
-            location: location,
-            routeTo: route
+            orderID: 1
           }
           stepService.addStep(step);
           console.log('fertig hinzugefügt')
@@ -123,8 +121,7 @@ export default {
         let step: Step = {
           id: location.id,
           label: location.label,
-          orderID: 1,
-          location: location
+          orderID: 1
         }
         stepService.addStep(step);
         console.log('fertig hinzugefügt')

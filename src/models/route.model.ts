@@ -4,4 +4,5 @@ export interface Route {
     id: string;
     travelTime: number;
     waypoints: Coords[];
+    distance: number;
 }

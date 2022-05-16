@@ -4,7 +4,6 @@ import {Coords} from "@/models/coords.model";
 import MapBoxDataService from "@/api/mapbox";
 import {reactive, readonly} from "vue";
 import map from "./map"
-import {Step} from "@/models/step.model";
 
 const state = reactive({
     routes: [] as Route[]
@@ -29,7 +28,8 @@ const getRoute = (locationA: Location, locationB: Location): Promise<Route> => {
                     {
                         id: locationB.id,
                         travelTime: data.duration,
-                        waypoints: route
+                        waypoints: route,
+                        distance: data.distance
                     }
                 )
             });

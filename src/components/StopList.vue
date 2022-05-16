@@ -1,5 +1,5 @@
 <template>
-  <div class="absolute md:bottom-[20px] md:left-[20px] z-[2] bg-transparent flex flex-col"  v-if="steps.length">
+  <div class="absolute md:top-[20px] md:right-[20px] z-[2] bg-transparent flex flex-col"  v-if="steps.length">
     <div>
       <stop-list-entry v-for="step in steps" v-bind:key="step.id" :step="step"/>
     </div>

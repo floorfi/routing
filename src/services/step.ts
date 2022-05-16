@@ -44,7 +44,7 @@ const removeStop = (stepID: string) => {
         mapService.removeLayer(followingStep!.id);
     }
 
-    // Recalculate route.ts (if more than one step left)
+    // Recalculate route (if more than one step left)
     if(previousStep && followingStep){
         const previousLocation = locationService.getlocationByID(previousStep.id)!
         const followingLocation = locationService.getlocationByID(followingStep.id)!
@@ -54,7 +54,8 @@ const removeStop = (stepID: string) => {
     }
 
     // Remove objects
-    mapService.removeMarker(stepToRemove.location.marker)
+    const locationToRemove = locationService.getlocationByID(stepToRemove.id)
+    mapService.removeMarker(locationToRemove!.marker)
     location.removeLocation(stepID);
     removeStep(stepID);
 
