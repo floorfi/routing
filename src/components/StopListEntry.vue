@@ -6,7 +6,7 @@
     </div>
     <div v-if="route" class="absolute flex justify-center w-[220px] left-[65px] top-[-23px] p-2 bg-slate-200 rounded-md">
       {{ distance }} km
-      <i class="fas fa-car-side 'text-slate-600' text-[18px] mx-[10px]"></i>
+      <font-awesome-icon icon="car-side" />
       {{ travelTime }}
     </div>
   </div>

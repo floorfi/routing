@@ -9,10 +9,7 @@
     @click="getGeolocation"
     :class="{ 'bg-slate-600': coords }"
   >
-    <i
-      class="fas fa-location-arrow 'text-slate-600' text-[18px]"
-      :class="{ 'text-white': coords, 'animate-pulse': fetchCoords }"
-    ></i>
+    <font-awesome-icon icon="location-arrow" size="lg" class="'text-slate-600'" :class="{ 'text-white': coords, 'animate-pulse': fetchCoords }" />
   </div>
 </template>
 
