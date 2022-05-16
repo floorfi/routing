@@ -10,7 +10,15 @@ import router from "./router";
 
 const app = createApp(App)
 
-// app.use(store);
+
+import { library } from "@fortawesome/fontawesome-svg-core";
+import {faCarSide, faLocationArrow} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+
+library.add(faCarSide, faLocationArrow);
+app.component("font-awesome-icon", FontAwesomeIcon)
+
+
 app.use(router);
 app.use(VueAxios, axios);
 app.provide('axios', app.config.globalProperties.axios)
