@@ -1,13 +1,14 @@
 <template>
   <div class="relative">
     <div class="w-[350px] mt-[4px] px-3 pt-2 pb-6 bg-white rounded-md">
-      <i @click="removeStep()" class="flex justify-end far fa-times-circle"></i>
+      <font-awesome-icon @click="removeStep()" icon="times-circle" class="flex justify-end" />
       <p>{{ step.label }}</p>
+      <p>{{ startTime }}</p>
     </div>
     <div v-if="route" class="absolute flex justify-center w-[220px] left-[65px] top-[-23px] p-2 bg-slate-200 rounded-md">
       {{ distance }} km
       <font-awesome-icon icon="car-side" />
-      {{ travelTime }}
+      {{ travelTime }} h
     </div>
   </div>
 
@@ -17,13 +18,16 @@
 
 import {computed, inject, onMounted, ref, Ref} from 'vue'
 import { Route } from '@/models/route.model'
+import moment from "moment";
 
 export default {
-  props: ["step"],
+  props: ["step", "first"],
 
   setup(props: any) {
     const stepService = inject('stepService') as any
     const routeService = inject('routeService') as any
+    const locationService = inject('locationService') as any
+    const travelConfigService = inject('travelConfigService') as any
 
     const route: Ref<Route|undefined> = ref();
 
@@ -33,32 +37,15 @@ export default {
 
     const travelTime = computed((): string => {
       const seconds = route.value!.travelTime
-      let hours = seconds / 3600;
-      let mins = (seconds % 3600) / 60;
+      return moment.utc(moment.duration(seconds, "seconds").asMilliseconds()).format("H:mm");
+    })
 
-
-      hours = Math.trunc(hours);
-      mins = Math.trunc(mins);
-
-
-      if (!hours && !mins) {
-        return "None";
-      }
-
-      if (hours) {
-        if (mins) {
-          return `${hours}:${mins} h`;
-        } else {
-          `${hours} h`;
-        }
+    const startTime = computed((): string => {
+      if(!route.value) {
+        return travelConfigService.state.config.start.format('DD.MM.YYYY HH:mm')
       } else {
-        return `${mins} min`;
+        return travelConfigService.state.config.start.add(locationService.getTravelDistanceToLocation(props.step.id), 'seconds').format('DD.MM.YYYY HH:mm')
       }
-
-      return ''
-
-      // Alternative:
-      // return moment.utc(seconds).format("HH:mm");
     })
 
     const distance = computed((): string => {
@@ -74,6 +61,7 @@ export default {
       removeStep,
       route,
       travelTime,
+      startTime,
       distance
     };
   }

@@ -3,6 +3,8 @@
 
   <stop-list/>
 
+  <travel-settings/>
+
   <div id="mapid" class="h-full z-[1]"></div>
 
 </template>
@@ -13,10 +15,11 @@ import MapFeatures from "../components/MapFeatures.vue";
 import StopList from "./../components/StopList.vue";
 
 import 'mapbox-gl/dist/mapbox-gl.css';
+import TravelSettings from "@/components/TravelSettings.vue";
 
 export default {
   name: "HomeView",
-  components: { MapFeatures, StopList },
+  components: {TravelSettings, MapFeatures, StopList },
 
   setup() {
     const mapService = inject('mapService') as any

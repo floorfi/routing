@@ -12,10 +12,10 @@ const app = createApp(App)
 
 
 import { library } from "@fortawesome/fontawesome-svg-core";
-import {faCarSide, faLocationArrow} from "@fortawesome/free-solid-svg-icons";
+import {faCarSide, faLocationArrow, faTimesCircle} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-library.add(faCarSide, faLocationArrow);
+library.add(faCarSide, faLocationArrow, faTimesCircle);
 app.component("font-awesome-icon", FontAwesomeIcon)
 
 

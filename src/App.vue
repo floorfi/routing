@@ -10,6 +10,7 @@ import map from "@/services/map"
 import step from "@/services/step"
 import location from "@/services/location"
 import route from "@/services/route"
+import travelConfig from "@/services/travelConfig"
 import {provide} from "vue";
 
 export default {
@@ -18,6 +19,7 @@ export default {
     provide('stepService', step)
     provide('locationService', location)
     provide('routeService', route)
+    provide('travelConfigService', travelConfig)
   }
 }
 </script>
