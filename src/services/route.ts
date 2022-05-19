@@ -17,7 +17,6 @@ const getRoute = (locationA: Location, locationB: Location): Promise<Route> => {
     return new Promise(resolve => {
         MapBoxDataService.getRoute(coords)
             .then(response => {
-                console.log(response)
                 const data = response.data.routes[0];
                 const route = data.geometry.coordinates;
                 const geojson = map.buildFeature('LineString', route);

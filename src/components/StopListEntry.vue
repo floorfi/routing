@@ -1,13 +1,13 @@
 <template>
   <div class="relative">
-    <div class="w-[350px] mt-[4px] px-3 pt-2 pb-6 bg-white rounded-md">
-      <font-awesome-icon @click="removeStep()" icon="times-circle" class="flex justify-end" />
+    <div class="w-[350px] mt-[4px] px-3 pt-5 pb-6 bg-white rounded-md">
+      <font-awesome-icon @click="removeStep()" icon="times-circle" class="absolute right-[5px]" />
       <p>{{ step.label }}</p>
       <p>{{ startTime }}</p>
     </div>
     <div v-if="route" class="absolute flex justify-center w-[220px] left-[65px] top-[-23px] p-2 bg-slate-200 rounded-md">
       {{ distance }} km
-      <font-awesome-icon icon="car-side" />
+      <font-awesome-icon icon="car-side" class="mt-[5px] mx-[10px]" />
       {{ travelTime }} h
     </div>
   </div>
@@ -16,7 +16,7 @@
 
 <script lang="ts">
 
-import {computed, inject, onMounted, ref, Ref} from 'vue'
+import {computed, inject, onMounted, ref, Ref, watch} from 'vue'
 import { Route } from '@/models/route.model'
 import moment from "moment";
 
@@ -41,10 +41,12 @@ export default {
     })
 
     const startTime = computed((): string => {
+      const startTime = moment.utc(JSON.parse(JSON.stringify(travelConfigService.state.config.start)))
       if(!route.value) {
-        return travelConfigService.state.config.start.format('DD.MM.YYYY HH:mm')
+        return startTime.format('DD.MM.YYYY HH:mm')
       } else {
-        return travelConfigService.state.config.start.add(locationService.getTravelDistanceToLocation(props.step.id), 'seconds').format('DD.MM.YYYY HH:mm')
+        const addDuration = locationService.getTravelDistanceToLocation(props.step.id)
+        return startTime.add(addDuration, 'seconds').format('DD.MM.YYYY HH:mm')
       }
     })
 
@@ -55,6 +57,14 @@ export default {
 
     onMounted(() => {
       route.value = routeService.getRouteByID(props.step.id);
+    })
+
+    // Folgende beiden, um bei Änderungen die Route für diesen Step zu aktualisieren
+    const correspondingRoute = computed((): Route => {
+      return routeService.state.routes.find((route:Route)=>route.id===props.step.id);
+    })
+    watch(correspondingRoute, (newValue: Route) => {
+      route.value = newValue;
     })
 
     return {

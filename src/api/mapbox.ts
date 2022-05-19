@@ -13,7 +13,6 @@ class MapBoxDataService {
   }
 
   getRoute(coords: Coords[]): Promise<any> {
-    console.log(coords)
     if(coords.length <= 1) {
       return Promise.resolve();
     }
