@@ -1,26 +1,30 @@
-import { createApp } from "vue";
-import App from "./App.vue";
 import "./assets/tailwind.css";
 
-import axios from 'axios'
-import VueAxios from 'vue-axios'
-
-import router from "./router";
-// import store from './store'
-
+import { createApp } from "vue";
+import App from "./App.vue"
 const app = createApp(App)
 
 
-import { library } from "@fortawesome/fontawesome-svg-core";
-import {faCarSide, faLocationArrow, faTimesCircle} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+app.use(VueAxios, axios);
+app.provide('axios', app.config.globalProperties.axios)
 
-library.add(faCarSide, faLocationArrow, faTimesCircle);
+
+import router from "./router";
+app.use(router);
+
+
+import { library } from "@fortawesome/fontawesome-svg-core";
+import {faCarSide, faGear, faLocationArrow, faTimesCircle} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+library.add(faCarSide, faLocationArrow, faTimesCircle, faGear);
 app.component("font-awesome-icon", FontAwesomeIcon)
 
 
-app.use(router);
-app.use(VueAxios, axios);
-app.provide('axios', app.config.globalProperties.axios)
+import vfmPlugin from 'vue-final-modal'
+app.use(vfmPlugin)
+
+
 app.config.globalProperties.$map = null
 app.mount('#app');

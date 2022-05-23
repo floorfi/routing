@@ -9,11 +9,23 @@ import mapboxgl, {
 } from "mapbox-gl";
 import {Coords} from "@/models/coords.model";
 import {Map} from 'mapbox-gl'
-import {Feature, FeatureCollection, Geometry, GeoJsonProperties} from 'geojson'
-import {Route} from "@/models/route.model";
-import {Location} from "@/models/location.model";
-import MapBoxDataService from "@/api/mapbox";
-import MapFeatures from "@/components/MapFeatures.vue";
+import {FeatureCollection} from 'geojson'
+import {MapboxStyleDefinition, MapboxStyleSwitcherControl, MapboxStyleSwitcherOptions} from "mapbox-gl-style-switcher";
+
+const styles: MapboxStyleDefinition[] = [
+    {
+        title: "Standard",
+        uri:"mapbox://styles/floorfi/cl2ncj0b5005114n5kpqbddb1"
+    },
+    {
+        title: "Light",
+        uri:"mapbox://styles/mapbox/light-v9"
+    },
+    {
+        title: "Outdoor",
+        uri:"mapbox://styles/mapbox/outdoors-v11"
+    }
+];
 
 const state = {
     map: {} as Map
@@ -138,11 +150,14 @@ const initiateMap = () => {
     mapboxgl.accessToken = process.env.VUE_APP_API_KEY;
     state.map = new mapboxgl.Map({
       container: "mapid",
-      // style: "mapbox://styles/floorfi/cl2ncj0b5005114n5kpqbddb1"
-      style: "mapbox://styles/mapbox/outdoors-v11"
-      // style: "mapbox://styles/mapbox/satellite-streets-v11"
-
+      style: styles.find(style=>style.title==='Standard')!.uri
     });
+
+    const options: MapboxStyleSwitcherOptions = {
+        defaultStyle: "Standard"
+    };
+
+    state.map.addControl(new MapboxStyleSwitcherControl(styles, options));
 
     state.map.on('load', () => {
 

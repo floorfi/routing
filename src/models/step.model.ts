@@ -4,5 +4,5 @@ import {Location} from "@/models/location.model";
 export interface Step {
     id: string;
     label: string;
-    orderID: number;
+    nights: number;
 }

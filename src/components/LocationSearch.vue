@@ -42,8 +42,6 @@
 
 <script lang="ts">
 import { ref, inject } from "vue";
-import {Store, useStore} from 'vuex'
-import axios from "axios";
 import MapBoxDataService from "../api/mapbox"
 import LoadingSpinner from "./LoadingSpinner.vue";
 import {Ref} from "vue";
@@ -105,31 +103,24 @@ export default {
 
       if(previousLocation) {
         routeService.getRoute(previousLocation, location).then((route: Route) => {
-          console.log(route)
           routeService.addRoute(route);
 
           let step: Step = {
             id: location.id,
             label: location.label,
-            orderID: 1
+            nights: 0
           }
           stepService.addStep(step);
-          console.log('fertig hinzugefügt')
 
         })
       } else {
         let step: Step = {
           id: location.id,
           label: location.label,
-          orderID: 1
+          nights: 0
         }
         stepService.addStep(step);
-        console.log('fertig hinzugefügt')
-
       }
-
-
-
     };
 
     const closeSearchResults = () => {
