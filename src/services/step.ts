@@ -16,6 +16,11 @@ const addStep = (step: Step) => {
     state.steps.push(step)
 }
 
+const updateStep = (step: Step) => {
+    let stepToUpdate = state.steps.find(stateStep => stateStep.id === step.id)
+    stepToUpdate = step
+}
+
 const removeStep = (id: string) => {
     state.steps = state.steps.filter((step: Step) => {
         return step.id !== id
@@ -73,6 +78,7 @@ const reindex = () => {
 export default {
     state: readonly(state),
     addStep,
+    updateStep,
     removeStep,
     removeStop,
     reindex

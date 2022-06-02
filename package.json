@@ -19,6 +19,7 @@
     "mapbox-gl": "^2.8.2",
     "mapbox-gl-style-switcher": "^1.0.11",
     "moment": "^2.29.3",
+    "moment-timezone": "^0.5.34",
     "vue": "^3.2.33",
     "vue-axios": "^3.4.1",
     "vue-class-component": "^8.0.0-0",
