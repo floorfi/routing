@@ -35,8 +35,8 @@
 import TButton from "@/components/shared/TButton.vue";
 export default {
   name: 'TModal',
-  components: {TButton},
+  // components: {TButton},
   inheritAttrs: false,
-  emits: ['cancel', 'confirm']
+  emits: ['cancel', 'confirm'],
 }
 </script>

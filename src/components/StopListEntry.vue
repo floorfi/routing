@@ -11,7 +11,7 @@
     </div>
   </div>
 
-  <t-modal v-model="modalOpen" @confirm="save">
+  <t-modal v-model="modalOpen" @confirm="save" @cancel="modalOpen=false">
     <template v-slot:title>Reiseschritt</template>
     <div class="space-y-6">
       <div>

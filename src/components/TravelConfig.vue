@@ -7,7 +7,7 @@
         <font-awesome-icon icon="gear" size="lg" class="'text-slate-600'" />
       </button>
 
-      <t-modal v-model="modalOpen" @confirm="save">
+      <t-modal v-model="modalOpen" @confirm="save" @cancel="modalOpen=false">
         <template v-slot:title>Reiseeinstellungen</template>
         <div class="space-y-6">
           <div>
@@ -32,7 +32,6 @@
 <script lang="ts">
 
 import {inject, ref, Ref} from 'vue'
-import VTailwindModal from "@/components/shared/VTailwindModal.vue";
 import moment from "moment-timezone";
 import TModal from "@/components/shared/TModal.vue";
 
@@ -48,6 +47,8 @@ export default {
     const start: Ref<string> = ref(travelConfigService.state.config.start.format('YYYY-MM-DDTHH:mm'));
 
     const save = () => {
+      console.log('save')
+
       const configToSave = {...travelConfigService.state.config}
       configToSave.label = label.value
       configToSave.maxDrivingTime = moment(maxDrivingTime.value, 'HH:mm').format('X')
